@@ -112,7 +112,8 @@ Mon Blog Magique is a kid-friendly blog application built with Flask, designed f
 - Session secret key configuration
 
 ## Changelog
-- July 08, 2025. Initial setup
+- July 08, 2025: Initial setup with full blog functionality
+- July 08, 2025: Added edit and delete functionality for posts with confirmation modals
 
 ## User Preferences
 

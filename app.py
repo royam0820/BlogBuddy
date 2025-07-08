@@ -74,5 +74,43 @@ def post_detail(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post_detail.html', post=post)
 
+@app.route('/edit/<int:post_id>', methods=['GET', 'POST'])
+def edit_post(post_id):
+    """Edit an existing blog post"""
+    post = Post.query.get_or_404(post_id)
+    form = PostForm(obj=post)
+    
+    if form.validate_on_submit():
+        try:
+            post.title = form.title.data
+            post.content = form.content.data
+            post.category = form.category.data
+            post.image_url = form.image_url.data
+            db.session.commit()
+            flash('Ton article a été modifié avec succès! ✨', 'success')
+            return redirect(url_for('post_detail', post_id=post.id))
+        except Exception as e:
+            db.session.rollback()
+            flash('Oups! Une erreur s\'est produite. Essaie encore! 😊', 'error')
+            logging.error(f"Error editing post: {e}")
+    
+    return render_template('edit_post.html', form=form, post=post)
+
+@app.route('/delete/<int:post_id>', methods=['POST'])
+def delete_post(post_id):
+    """Delete a blog post"""
+    post = Post.query.get_or_404(post_id)
+    
+    try:
+        db.session.delete(post)
+        db.session.commit()
+        flash('Ton article a été supprimé! 🗑️', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Oups! Impossible de supprimer l\'article. 😔', 'error')
+        logging.error(f"Error deleting post: {e}")
+    
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

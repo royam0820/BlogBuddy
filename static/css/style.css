@@ -389,6 +389,66 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
 }
 
+/* Button Groups */
+.btn-group-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-group-actions .btn {
+    flex: 0 1 auto;
+    min-width: fit-content;
+}
+
+/* Action Buttons */
+.btn-outline-warning:hover {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    border-color: #f39c12;
+    color: white;
+}
+
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    border-color: #e74c3c;
+    color: white;
+}
+
+/* Modal Customizations */
+.modal-content {
+    border: none;
+    border-radius: 20px;
+    box-shadow: var(--shadow-strong);
+}
+
+.modal-header {
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+    border-radius: 0 0 20px 20px !important;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Responsive Button Groups */
+@media (max-width: 576px) {
+    .btn-group-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
