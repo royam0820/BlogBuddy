@@ -1,8 +1,8 @@
-# MiniMondo - Architecture Guide
+# MiniMonde - Architecture Guide
 
 ## Overview
 
-MiniMondo is a kid-friendly blog application built with Flask, designed for children and their parents to share stories and adventures. The application features a colorful, playful interface with French language support and emoji-rich categorization system.
+MiniMonde is a kid-friendly blog application built with Flask, designed for children and their parents to share stories and adventures. The application features a colorful, playful interface with French language support and emoji-rich categorization system.
 
 ## System Architecture
 
@@ -116,6 +116,7 @@ MiniMondo is a kid-friendly blog application built with Flask, designed for chil
 - July 08, 2025: Added edit and delete functionality for posts with confirmation modals
 - July 08, 2025: Changed blog title from "Mon Blog Magique" to "L'Entre-pote"
 - July 08, 2025: Updated blog title to "MiniMondo"
+- July 08, 2025: Changed blog title to "MiniMonde"
 
 ## User Preferences
 
