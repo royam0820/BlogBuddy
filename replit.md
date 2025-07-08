@@ -1,8 +1,8 @@
-# L'Entre-pote - Architecture Guide
+# MiniMondo - Architecture Guide
 
 ## Overview
 
-L'Entre-pote is a kid-friendly blog application built with Flask, designed for children and their parents to share stories and adventures. The application features a colorful, playful interface with French language support and emoji-rich categorization system.
+MiniMondo is a kid-friendly blog application built with Flask, designed for children and their parents to share stories and adventures. The application features a colorful, playful interface with French language support and emoji-rich categorization system.
 
 ## System Architecture
 
@@ -115,6 +115,7 @@ L'Entre-pote is a kid-friendly blog application built with Flask, designed for c
 - July 08, 2025: Initial setup with full blog functionality
 - July 08, 2025: Added edit and delete functionality for posts with confirmation modals
 - July 08, 2025: Changed blog title from "Mon Blog Magique" to "L'Entre-pote"
+- July 08, 2025: Updated blog title to "MiniMondo"
 
 ## User Preferences
 
