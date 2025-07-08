@@ -292,7 +292,7 @@ function hideImagePreview() {
 function initializeShareFunction() {
     // This function will be called from the template
     window.sharePost = function() {
-        const title = document.querySelector('.post-title')?.textContent || 'Mon Blog Magique';
+        const title = document.querySelector('.post-title')?.textContent || 'L\'Entre-pote';
         const url = window.location.href;
         
         if (navigator.share) {
@@ -411,7 +411,7 @@ document.head.appendChild(style);
 
 // Add some fun console messages for curious kids!
 console.log(`
-🌈 Bienvenue sur Mon Blog Magique! 🌈
+🌈 Bienvenue sur L'Entre-pote! 🌈
 ✨ Tu es un petit curieux qui regarde le code? C'est génial! ✨
 🎨 Continue à explorer et à apprendre! 🎨
 `);
