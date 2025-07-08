@@ -121,6 +121,7 @@ MiniMonde is a kid-friendly blog application built with Flask, designed for chil
 - July 08, 2025: Removed rainbow emoji from homepage text and console messages
 - July 08, 2025: Removed footer text about children and parents
 - July 08, 2025: Added custom footer text "Créé par Juliette Nick Pay"
+- July 08, 2025: Changed create post title to "Écris ton histoire"
 
 ## User Preferences
 
