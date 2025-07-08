@@ -118,6 +118,7 @@ MiniMonde is a kid-friendly blog application built with Flask, designed for chil
 - July 08, 2025: Updated blog title to "MiniMondo"
 - July 08, 2025: Changed blog title to "MiniMonde"
 - July 08, 2025: Removed rainbow icon from navigation brand
+- July 08, 2025: Removed rainbow emoji from homepage text and console messages
 
 ## User Preferences
 

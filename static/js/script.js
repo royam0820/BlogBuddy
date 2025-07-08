@@ -411,7 +411,7 @@ document.head.appendChild(style);
 
 // Add some fun console messages for curious kids!
 console.log(`
-🌈 Bienvenue sur MiniMonde! 🌈
+✨ Bienvenue sur MiniMonde! ✨
 ✨ Tu es un petit curieux qui regarde le code? C'est génial! ✨
 🎨 Continue à explorer et à apprendre! 🎨
 `);
