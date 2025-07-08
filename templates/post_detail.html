@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Mon Blog Magique{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <article class="post-detail">
+            <!-- Back Button -->
+            <div class="mb-3">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Retour aux articles
+                </a>
+            </div>
+            
+            <!-- Post Header -->
+            <header class="post-header mb-4">
+                <div class="mb-3">
+                    <span class="badge category-badge category-{{ post.category }} fs-6">
+                        {{ post.category_emoji }} {{ post.category.title() }}
+                    </span>
+                </div>
+                
+                <h1 class="post-title">{{ post.title }}</h1>
+                
+                <div class="post-meta text-muted">
+                    <i class="fas fa-calendar-alt"></i>
+                    Publié le {{ post.formatted_date }}
+                </div>
+            </header>
+            
+            <!-- Post Image -->
+            {% if post.image_url %}
+            <div class="post-image-container mb-4">
+                <img src="{{ post.image_url }}" class="img-fluid rounded post-detail-image" alt="{{ post.title }}" loading="lazy">
+            </div>
+            {% endif %}
+            
+            <!-- Post Content -->
+            <div class="post-content">
+                <div class="content-text">
+                    {{ post.content|replace('\n', '<br>')|safe }}
+                </div>
+            </div>
+            
+            <!-- Post Footer -->
+            <footer class="post-footer mt-5 pt-4 border-top">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="share-buttons">
+                        <span class="text-muted me-3">Partager cette histoire:</span>
+                        <button class="btn btn-outline-primary btn-sm" onclick="sharePost()">
+                            <i class="fas fa-share-alt"></i> Partager
+                        </button>
+                    </div>
+                    
+                    <a href="{{ url_for('create_post') }}" class="btn btn-primary btn-magical">
+                        <i class="fas fa-plus-circle"></i> Écrire mon histoire
+                    </a>
+                </div>
+            </footer>
+        </article>
+    </div>
+</div>
+{% endblock %}

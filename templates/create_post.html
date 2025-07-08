@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Créer un article - Mon Blog Magique{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card form-card">
+            <div class="card-header text-center">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-feather-alt"></i>
+                    Écris ton histoire magique!
+                </h2>
+                <p class="text-muted mt-2">Partage tes aventures avec le monde entier! ✨</p>
+            </div>
+            
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Title Field -->
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label fw-bold") }}
+                        {{ form.title(class="form-control form-control-lg") }}
+                        {% if form.title.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.title.errors %}
+                                    <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Category Field -->
+                    <div class="mb-3">
+                        {{ form.category.label(class="form-label fw-bold") }}
+                        {{ form.category(class="form-select") }}
+                        {% if form.category.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.category.errors %}
+                                    <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Content Field -->
+                    <div class="mb-3">
+                        {{ form.content.label(class="form-label fw-bold") }}
+                        {{ form.content(class="form-control") }}
+                        {% if form.content.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.content.errors %}
+                                    <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Image URL Field -->
+                    <div class="mb-4">
+                        {{ form.image_url.label(class="form-label fw-bold") }}
+                        {{ form.image_url(class="form-control") }}
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i>
+                            Tu peux ajouter une image en collant le lien ici (optionnel)
+                        </div>
+                        {% if form.image_url.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.image_url.errors %}
+                                    <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-magical">
+                            <i class="fas fa-paper-plane"></i> Publier mon article
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

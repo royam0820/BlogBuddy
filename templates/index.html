@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Mon Blog Magique{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center mb-5">
+    <h1 class="display-4 text-gradient">
+        <i class="fas fa-magic"></i>
+        Bienvenue sur Mon Blog Magique!
+    </h1>
+    <p class="lead text-muted">
+        Un endroit spécial où les enfants et leurs parents partagent leurs aventures! 🌈
+    </p>
+    <a href="{{ url_for('create_post') }}" class="btn btn-primary btn-lg btn-magical">
+        <i class="fas fa-feather-alt"></i> Écrire mon histoire
+    </a>
+</div>
+
+{% if posts %}
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card post-card h-100">
+                {% if post.image_url %}
+                <img src="{{ post.image_url }}" class="card-img-top post-image" alt="{{ post.title }}" loading="lazy">
+                {% else %}
+                <div class="card-img-top post-image-placeholder d-flex align-items-center justify-content-center">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-2">
+                        <span class="badge category-badge category-{{ post.category }}">
+                            {{ post.category_emoji }} {{ post.category.title() }}
+                        </span>
+                    </div>
+                    
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    
+                    <p class="card-text text-muted">
+                        {{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}
+                    </p>
+                    
+                    <div class="mt-auto">
+                        <small class="text-muted d-block mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            {{ post.formatted_date }}
+                        </small>
+                        
+                        <a href="{{ url_for('post_detail', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-book-open"></i> Lire la suite
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state text-center">
+        <div class="empty-icon mb-4">
+            <i class="fas fa-feather-alt fa-5x text-muted"></i>
+        </div>
+        <h3 class="text-muted">Aucun article pour le moment</h3>
+        <p class="text-muted">Sois le premier à partager ton histoire magique!</p>
+        <a href="{{ url_for('create_post') }}" class="btn btn-primary btn-lg btn-magical">
+            <i class="fas fa-plus-circle"></i> Créer le premier article
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
