@@ -122,6 +122,7 @@ MiniMonde is a kid-friendly blog application built with Flask, designed for chil
 - July 08, 2025: Removed footer text about children and parents
 - July 08, 2025: Added custom footer text "Créé par Juliette Nick Pay"
 - July 08, 2025: Changed create post title to "Écris ton histoire"
+- July 09, 2025: Added separate sections for kids and parents on homepage with distinct styling
 
 ## User Preferences
 
