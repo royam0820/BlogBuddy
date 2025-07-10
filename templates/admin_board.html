@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Modération - Mur de discussion{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-9">
+        <div class="form-card p-4 mt-4 mb-4">
+            <h2 class="text-center text-gradient mb-3">Modération du mur de discussion</h2>
+            <div class="messages-list">
+                {% for msg in messages %}
+                <div class="card mb-3 post-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold">{{ msg.author.username }}</span>
+                            <span class="text-muted small">{{ msg.timestamp.strftime('%d/%m/%Y %H:%M') }}</span>
+                        </div>
+                        <div class="content-text">{{ msg.content }}</div>
+                        <form method="POST" action="{{ url_for('delete_message', msg_id=msg.id) }}" class="mt-2" style="display:inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info">Aucun message à modérer.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

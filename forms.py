@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, URLField
-from wtforms.validators import DataRequired, Length, Optional, URL
+from wtforms import StringField, TextAreaField, SelectField, URLField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired, Length, Optional, URL, Email, EqualTo
 
 class PostForm(FlaskForm):
     """Form for creating blog posts"""
@@ -46,3 +46,20 @@ class PostForm(FlaskForm):
         ],
         render_kw={'placeholder': 'https://exemple.com/mon-image.jpg (optionnel)'}
     )
+
+class LoginForm(FlaskForm):
+    username = StringField('Nom d\'utilisateur', validators=[DataRequired()])
+    password = PasswordField('Mot de passe', validators=[DataRequired()])
+    remember = BooleanField('Se souvenir de moi')
+    submit = SubmitField('Connexion')
+
+class RegisterForm(FlaskForm):
+    username = StringField('Nom d\'utilisateur', validators=[DataRequired(), Length(min=3, max=64)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Mot de passe', validators=[DataRequired(), Length(min=6)])
+    password2 = PasswordField('Confirme ton mot de passe', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Inscription')
+
+class MessageBoardForm(FlaskForm):
+    content = TextAreaField('Ton message', validators=[DataRequired(), Length(min=2, max=500)], render_kw={'placeholder': 'Écris ton message ici...', 'rows': 4})
+    submit = SubmitField('Envoyer')

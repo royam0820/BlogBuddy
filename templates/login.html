@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Connexion - MiniMonde{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="form-card p-4 mt-4">
+            <h2 class="text-center text-gradient mb-4">Connexion</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.username.label(class_='form-label') }}
+                    {{ form.username(class_='form-control', placeholder='Ton nom d\'utilisateur') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password.label(class_='form-label') }}
+                    {{ form.password(class_='form-control', placeholder='Mot de passe') }}
+                </div>
+                <div class="mb-3 form-check">
+                    {{ form.remember(class_='form-check-input') }}
+                    {{ form.remember.label(class_='form-check-label') }}
+                </div>
+                <div class="d-grid">
+                    {{ form.submit(class_='btn btn-magical btn-lg') }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

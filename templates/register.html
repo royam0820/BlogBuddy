@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Inscription - MiniMonde{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="form-card p-4 mt-4">
+            <h2 class="text-center text-gradient mb-4">Inscription</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.username.label(class_='form-label') }}
+                    {{ form.username(class_='form-control', placeholder='Choisis un nom rigolo !') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label(class_='form-label') }}
+                    {{ form.email(class_='form-control', placeholder='Ton email magique') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password.label(class_='form-label') }}
+                    {{ form.password(class_='form-control', placeholder='Mot de passe secret') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password2.label(class_='form-label') }}
+                    {{ form.password2(class_='form-control', placeholder='Répète ton mot de passe') }}
+                </div>
+                <div class="d-grid">
+                    {{ form.submit(class_='btn btn-magical btn-lg') }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

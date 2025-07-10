@@ -11,9 +11,11 @@
     <p class="lead text-muted">
         Un endroit spécial où les enfants et leurs parents partagent leurs aventures!
     </p>
-    <a href="{{ url_for('create_post') }}" class="btn btn-primary btn-lg btn-magical">
-        <i class="fas fa-feather-alt"></i> Écrire mon histoire
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="{{ url_for('create_post') }}" class="btn btn-magical btn-lg mt-3">
+        <i class="fas fa-pen"></i> Écrire mon histoire
     </a>
+{% endif %}
 </div>
 
 {% if posts %}

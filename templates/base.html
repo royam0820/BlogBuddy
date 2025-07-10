@@ -36,11 +36,41 @@
                             <i class="fas fa-home"></i> Accueil
                         </a>
                     </li>
+                    {% if current_user.is_authenticated and not current_user.is_admin %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('create_post') }}">
-                            <i class="fas fa-plus-circle"></i> Créer un article
+                        <a class="nav-link" href="{{ url_for('board') }}">
+                            <i class="fas fa-comments"></i> Mur de discussion
                         </a>
                     </li>
+                    {% endif %}
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_board') }}">
+                            <i class="fas fa-user-shield"></i> Modération
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link">👋 Bienvenue, <b>{{ current_user.username }}</b>{% if current_user.is_admin %} <span class="badge bg-warning text-dark">Admin</span>{% endif %} !</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Déconnexion
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">
+                            <i class="fas fa-user-plus"></i> Inscription
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
