@@ -112,5 +112,18 @@ def delete_post(post_id):
     
     return redirect(url_for('index'))
 
+@app.route('/like/<int:post_id>', methods=['POST'])
+def like_post(post_id):
+    """Incrémente le nombre de likes pour un article"""
+    post = Post.query.get_or_404(post_id)
+    try:
+        post.likes += 1
+        db.session.commit()
+        flash('Merci pour ton like ! ❤️', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash("Oups ! Impossible d'ajouter un like.", 'error')
+    return redirect(request.referrer or url_for('post_detail', post_id=post_id))
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

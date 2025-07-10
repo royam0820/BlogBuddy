@@ -97,7 +97,7 @@ MiniMonde is a kid-friendly blog application built with Flask, designed for chil
 - Entry point: `main.py` runs Flask development server
 - Debug mode enabled for development
 - SQLite database for local development
-- Host: 0.0.0.0, Port: 5000
+- Host: 0.0.0.0, Port: 5001
 
 ### Production Considerations
 - ProxyFix middleware configured for reverse proxy deployment

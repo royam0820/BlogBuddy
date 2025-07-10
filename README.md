@@ -62,18 +62,7 @@ L'application sera accessible sur [http://localhost:5000](http://localhost:5000)
 ## Accès à la base de données SQLite
 Les articles sont stockés dans le fichier `instance/blog.db` (base SQLite).
 
-### Explorer la base de données
-- **Avec un outil graphique** :
-  - [DB Browser for SQLite](https://sqlitebrowser.org/) (Windows/Mac/Linux)
-  - Ouvrez le fichier `instance/blog.db` pour visualiser, éditer ou exporter les données.
-- **En ligne de commande** :
-  ```bash
-  sqlite3 instance/blog.db
-  # Puis dans l'invite SQLite :
-  .tables           # Voir les tables
-  SELECT * FROM post;  # Voir tous les articles
-  .exit             # Quitter SQLite
-  ```
+©
 
 ## Configuration
 - Par défaut, la base SQLite est utilisée (`instance/blog.db`).
@@ -87,3 +76,49 @@ Créé par Juliette Nick Pay.
 ---
 
 *MiniMonde est un projet éducatif et ludique pour découvrir le web en famille !* 
+
+---
+
+### 1. **Database Rollback (Undo Last Change in Code)**
+If you want to undo the last database schema change (for example, removing the `likes` column you just added):
+
+- **With SQLite,** there is no built-in migration/rollback unless you use a tool like Flask-Migrate/Alembic.
+- If you want to remove the `likes` column, you must:
+  1. Edit `models.py` to remove the `likes` field.
+  2. Manually alter the database (using a tool like DB Browser for SQLite or SQL commands) to drop the column.
+  3. Or, delete `instance/blog.db` to reset the database (you will lose all posts).
+
+---
+
+### 2. **Code Rollback (Undo File Changes)**
+If you want to undo recent code changes:
+- If you use git, you can run:
+  ```bash
+  git checkout -- <filename>
+  ```
+  or to reset all changes:
+  ```bash
+  git reset --hard
+  ```
+- If you want to revert to a previous commit:
+  ```bash
+  git log  # find the commit hash
+  git checkout <commit-hash>
+  ```
+
+---
+
+### 3. **Rollback a Transaction in Flask/SQLAlchemy**
+If you want to rollback a database transaction in your code (e.g., after an error), you already do this in your Flask routes:
+```python
+db.session.rollback()
+```
+This undoes uncommitted changes in the current transaction.
+
+---
+
+**Please specify:**  
+- Do you want to rollback the database schema, your code, or a specific transaction?
+- Do you want to remove the "like" feature, or just undo the last action?
+
+Let me know your intent and I’ll guide you step by step! 
