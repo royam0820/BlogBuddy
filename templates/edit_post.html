@@ -2,6 +2,11 @@
 
 {% block title %}Modifier l'article - MiniMonde{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+{% endblock %}
+
 {% block content %}
 {% if not current_user.is_authenticated or not current_user.is_admin %}
     <div class="alert alert-danger mt-4">Accès réservé aux administrateurs.</div>
@@ -50,7 +55,7 @@
                     <!-- Content Field -->
                     <div class="mb-3">
                         {{ form.content.label(class="form-label fw-bold") }}
-                        {{ form.content(class="form-control") }}
+                        {{ form.content(class="form-control", id="markdown-editor") }}
                         {% if form.content.errors %}
                             <div class="text-danger mt-1">
                                 {% for error in form.content.errors %}
@@ -96,4 +101,12 @@
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+    <script>
+      var easyMDE = new EasyMDE({ element: document.getElementById("markdown-editor") });
+    </script>
 {% endblock %}

@@ -1,12 +1,15 @@
 import os
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from datetime import datetime
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from functools import wraps
+import markdown
+from flask_wtf import FlaskForm
+import re
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -41,8 +44,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # Import models and forms after app initialization
-from models import Post, User, MessageBoard
-from forms import PostForm, LoginForm, RegisterForm, MessageBoardForm
+from models import Post, User, MessageBoard, Comment
+from forms import PostForm, LoginForm, RegisterForm, MessageBoardForm, CommentForm, ResetPasswordForm, AdminReplyForm
 
 # Create tables
 with app.app_context():
@@ -57,11 +60,23 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def remove_invalid_surrogates(text):
+    if not text:
+        return text
+    return re.sub(r'[\ud800-\udfff]', '', text)
+
+class DummyForm(FlaskForm):
+    pass
+
 @app.route('/')
 def index():
     """Homepage showing all posts from newest to oldest"""
     posts = Post.query.order_by(Post.created_at.desc()).all()
-    return render_template('index.html', posts=posts)
+    form = DummyForm()
+    for post in posts:
+        post.html_content = markdown.markdown(post.content)
+        post.comment_count = Comment.query.filter_by(post_id=post.id).count()
+    return render_template('index.html', posts=posts, form=form)
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -73,10 +88,10 @@ def create_post():
     if form.validate_on_submit():
         try:
             post = Post(
-                title=form.title.data,
-                content=form.content.data,
+                title=remove_invalid_surrogates(form.title.data),
+                content=remove_invalid_surrogates(form.content.data),
                 category=form.category.data,
-                image_url=form.image_url.data,
+                image_url=remove_invalid_surrogates(form.image_url.data),
                 created_at=datetime.utcnow()
             )
             db.session.add(post)
@@ -90,11 +105,24 @@ def create_post():
     
     return render_template('create_post.html', form=form)
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post_detail(post_id):
-    """Show individual post detail"""
     post = Post.query.get_or_404(post_id)
-    return render_template('post_detail.html', post=post)
+    html_content = markdown.markdown(post.content)
+    form = CommentForm()
+    if form.validate_on_submit() and current_user.is_authenticated:
+        comment = Comment(
+            post_id=post.id,
+            author_id=current_user.id,
+            content=remove_invalid_surrogates(form.content.data)
+        )
+        db.session.add(comment)
+        db.session.commit()
+        flash('Commentaire ajouté !', 'success')
+        return redirect(url_for('post_detail', post_id=post.id))
+    comments = Comment.query.filter_by(post_id=post.id).order_by(Comment.timestamp.asc()).all()
+    comment_count = Comment.query.filter_by(post_id=post.id).count()
+    return render_template('post_detail.html', post=post, html_content=html_content, form=form, comments=comments, comment_count=comment_count)
 
 @app.route('/edit/<int:post_id>', methods=['GET', 'POST'])
 @login_required
@@ -112,13 +140,13 @@ def edit_post(post_id):
             post.image_url = form.image_url.data
             db.session.commit()
             flash('Ton article a été modifié avec succès! ✨', 'success')
-            return redirect(url_for('post_detail', post_id=post.id))
+            return redirect(url_for('post_detail', post_id=post.id, from_edit=1))
         except Exception as e:
             db.session.rollback()
             flash('Oups! Une erreur s\'est produite. Essaie encore! 😊', 'error')
             logging.error(f"Error editing post: {e}")
     
-    return render_template('edit_post.html', form=form, post=post)
+    return render_template('edit_post.html', form=form, post=post, editing=True)
 
 @app.route('/delete/<int:post_id>', methods=['POST'])
 @login_required
@@ -145,9 +173,13 @@ def like_post(post_id):
     try:
         post.likes += 1
         db.session.commit()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': True, 'likes': post.likes})
         flash('Merci pour ton like ! ❤️', 'success')
     except Exception as e:
         db.session.rollback()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'error': str(e)}), 500
         flash("Oups ! Impossible d'ajouter un like.", 'error')
     return redirect(request.referrer or url_for('post_detail', post_id=post_id))
 
@@ -195,12 +227,10 @@ def register():
 @app.route('/board', methods=['GET', 'POST'])
 @login_required
 def board():
-    if current_user.is_admin:
-        flash('Le mur de discussion est réservé aux utilisateurs non-admin.', 'error')
-        return redirect(url_for('index'))
+    # Suppression de la restriction pour les admins
     form = MessageBoardForm()
     if form.validate_on_submit():
-        msg = MessageBoard(author_id=current_user.id, content=form.content.data)
+        msg = MessageBoard(author_id=current_user.id, content=remove_invalid_surrogates(form.content.data))
         db.session.add(msg)
         db.session.commit()
         flash('Message envoyé !', 'success')
@@ -208,12 +238,29 @@ def board():
     messages = MessageBoard.query.order_by(MessageBoard.timestamp.desc()).all()
     return render_template('board.html', form=form, messages=messages)
 
-@app.route('/admin/board')
+@app.route('/admin/board', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_board():
     messages = MessageBoard.query.order_by(MessageBoard.timestamp.desc()).all()
-    return render_template('admin_board.html', messages=messages)
+    reply_forms = {msg.id: AdminReplyForm() for msg in messages}
+    return render_template('admin_board.html', messages=messages, reply_forms=reply_forms)
+
+@app.route('/admin/message/<int:msg_id>/reply', methods=['POST'])
+@login_required
+@admin_required
+def admin_reply(msg_id):
+    msg = MessageBoard.query.get_or_404(msg_id)
+    form = AdminReplyForm()
+    if form.validate_on_submit():
+        msg.admin_reply = form.reply.data
+        msg.admin_info = form.info.data
+        msg.admin_user = current_user.username
+        db.session.commit()
+        flash('Réponse envoyée !', 'success')
+    else:
+        flash('Erreur dans le formulaire de réponse.', 'error')
+    return redirect(url_for('admin_board'))
 
 @app.route('/admin/message/<int:msg_id>/delete', methods=['POST'])
 @login_required
@@ -224,6 +271,26 @@ def delete_message(msg_id):
     db.session.commit()
     flash('Message supprimé.', 'success')
     return redirect(url_for('admin_board'))
+
+@app.route('/comment/<int:comment_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    post_id = comment.post_id
+    db.session.delete(comment)
+    db.session.commit()
+    flash('Commentaire supprimé.', 'success')
+    return redirect(url_for('post_detail', post_id=post_id))
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        # Ici, on simule l'envoi d'un email
+        flash('Si cet email existe, un lien de réinitialisation a été envoyé.', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

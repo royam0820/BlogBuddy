@@ -16,6 +16,8 @@
     
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon_blog.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
     <!-- Navigation -->
@@ -43,10 +45,10 @@
                         </a>
                     </li>
                     {% endif %}
-                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_board') }}">
-                            <i class="fas fa-user-shield"></i> Modération
+                        <a class="nav-link" href="{{ url_for('board') }}">
+                            <i class="fas fa-comments"></i> Mur de communication
                         </a>
                     </li>
                     {% endif %}

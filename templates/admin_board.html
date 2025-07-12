@@ -14,6 +14,22 @@
                             <span class="text-muted small">{{ msg.timestamp.strftime('%d/%m/%Y %H:%M') }}</span>
                         </div>
                         <div class="content-text">{{ msg.content }}</div>
+                        {% if msg.admin_info %}
+                            <div class="alert alert-info mt-1 mb-2 p-2"><strong>Info :</strong> {{ msg.admin_info }}</div>
+                        {% endif %}
+                        {% if msg.admin_reply %}
+                            <div class="alert alert-success mt-3 mb-2 p-2">
+                                <strong>Réponse de {{ current_user.username }} :</strong> {{ msg.admin_reply }}
+                            </div>
+                        {% endif %}
+                        <!-- Formulaire de réponse admin -->
+                        <form method="POST" action="{{ url_for('admin_reply', msg_id=msg.id) }}" class="mt-2 mb-2">
+                            {{ reply_forms[msg.id].hidden_tag() }}
+                            <div class="input-group">
+                                {{ reply_forms[msg.id].reply(class_='form-control', placeholder='Répondre à ce message…') }}
+                                <button type="submit" class="btn btn-magical btn-sm">Répondre</button>
+                            </div>
+                        </form>
                         <form method="POST" action="{{ url_for('delete_message', msg_id=msg.id) }}" class="mt-2" style="display:inline;">
                             <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
                         </form>

@@ -13,6 +13,7 @@ class Post(db.Model):
     image_url = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     likes = db.Column(db.Integer, default=0)  # Nouveau champ pour compter les likes
+    comments = db.relationship('Comment', backref='post', cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<Post {self.title}>'
@@ -21,14 +22,14 @@ class Post(db.Model):
     def category_emoji(self):
         """Return emoji for each category"""
         emoji_map = {
-            'voyage': '\u2708\ufe0f',
-            'cuisine': '\ud83c\udf73',
-            'art': '\ud83c\udfa8',
-            'scolarité': '\ud83d\udcda',
-            'musique': '\ud83c\udfb5',
-            'autres': '\ud83c\udf1f'
+            'voyage': '✈️',
+            'cuisine': '🍳',
+            'art': '🎨',
+            'scolarité': '📚',
+            'musique': '🎵',
+            'autres': '🌟'
         }
-        return emoji_map.get(self.category, '\ud83c\udf1f')
+        return emoji_map.get(self.category, '🌟')
     
     @property
     def formatted_date(self):
@@ -58,7 +59,18 @@ class MessageBoard(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     reviewed = db.Column(db.Boolean, default=False)
     is_offensive = db.Column(db.Boolean, default=False)
+    admin_reply = db.Column(db.Text, nullable=True)  # Réponse de l'admin
+    admin_info = db.Column(db.Text, nullable=True)   # Information optionnelle
+    admin_user = db.Column(db.String(64), nullable=True)  # Username de l'admin ayant répondu
     author = relationship('User', backref='messages')
 
     def __repr__(self):
         return f'<MessageBoard {self.id}>'
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    author = db.relationship('User', backref='comments')

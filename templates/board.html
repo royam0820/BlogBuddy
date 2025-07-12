@@ -25,6 +25,19 @@
                         <span class="text-muted small">{{ msg.timestamp.strftime('%d/%m/%Y %H:%M') }}</span>
                     </div>
                     <div class="content-text">{{ msg.content }}</div>
+                    {% if current_user.is_authenticated and current_user.is_admin and msg.author_id == current_user.id %}
+                        <form method="POST" action="{{ url_for('delete_message', msg_id=msg.id) }}" class="mt-2" style="display:inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
+                        </form>
+                    {% endif %}
+                    {% if msg.admin_reply %}
+                        <div class="alert alert-success mt-3 mb-2 p-2">
+                            <strong>Réponse de {{ msg.admin_user if msg.admin_user else 'l\'admin' }} :</strong> {{ msg.admin_reply }}
+                        </div>
+                    {% endif %}
+                    {% if msg.admin_info %}
+                        <div class="alert alert-info mt-1 mb-2 p-2"><strong>Info :</strong> {{ msg.admin_info }}</div>
+                    {% endif %}
                 </div>
             </div>
             {% else %}

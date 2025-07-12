@@ -7,6 +7,35 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeImagePreview();
     initializeShareFunction();
     initializeAccessibility();
+
+    document.querySelectorAll('.like-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var postId = this.getAttribute('data-post-id');
+            var likeCountSpan = this.querySelector('.like-count');
+            var button = this;
+            fetch('/like/' + postId, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    likeCountSpan.textContent = data.likes;
+                    button.classList.add('btn-success');
+                    button.classList.remove('btn-outline-success');
+                    button.disabled = true;
+                } else {
+                    alert('Erreur lors du like.');
+                }
+            })
+            .catch(() => alert('Erreur lors du like.'));
+        });
+    });
 });
 
 /**
@@ -376,6 +405,11 @@ function initializeAccessibility() {
             this.style.outlineOffset = '';
         });
     });
+}
+
+function getCSRFToken() {
+    var csrfInput = document.querySelector('input[name="csrf_token"]');
+    return csrfInput ? csrfInput.value : '';
 }
 
 // Add custom CSS animations

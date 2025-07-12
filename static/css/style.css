@@ -512,3 +512,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-magical:active {
     background: var(--gradient-accent);
 }
+
+.heart-red {
+    color: #e74c3c !important;
+}

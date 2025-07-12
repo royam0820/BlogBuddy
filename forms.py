@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, URLField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Length, Optional, URL, Email, EqualTo
+import markdown
 
 class PostForm(FlaskForm):
     """Form for creating blog posts"""
@@ -63,3 +64,16 @@ class RegisterForm(FlaskForm):
 class MessageBoardForm(FlaskForm):
     content = TextAreaField('Ton message', validators=[DataRequired(), Length(min=2, max=500)], render_kw={'placeholder': 'Écris ton message ici...', 'rows': 4})
     submit = SubmitField('Envoyer')
+
+class CommentForm(FlaskForm):
+    content = TextAreaField('Ton commentaire', validators=[DataRequired(), Length(min=2, max=500)], render_kw={'placeholder': 'Écris ton commentaire ici...', 'rows': 3})
+    submit = SubmitField('Commenter')
+
+class ResetPasswordForm(FlaskForm):
+    email = StringField('Ton email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Envoyer le lien de réinitialisation')
+
+class AdminReplyForm(FlaskForm):
+    reply = TextAreaField('Réponse de l’admin', render_kw={'rows': 2, 'placeholder': 'Répondre à ce message…'})
+    info = TextAreaField('Information (optionnel)', render_kw={'rows': 1, 'placeholder': 'Ajouter une information visible sur le mur...'})
+    submit = SubmitField('Envoyer la réponse')
