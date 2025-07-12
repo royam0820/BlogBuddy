@@ -2,7 +2,11 @@
 
 MiniMonde est une application de blog ludique et colorée, conçue pour permettre aux enfants et à leurs parents de partager leurs histoires et aventures. L'interface est conviviale, en français, et chaque article peut être catégorisé avec des emojis pour plus de fun !
 
-## Fonctionnalités principales
+---
+
+## 📚 Documentation détaillée
+
+### Fonctionnalités principales
 - Création, édition et suppression d'articles de blog (admin uniquement)
 - Catégorisation des articles (voyage, cuisine, art, scolarité, musique, autres) avec emoji
 - Ajout d'une image à chaque article (via URL)
@@ -16,6 +20,63 @@ MiniMonde est une application de blog ludique et colorée, conçue pour permettr
 - Navigation simple et intuitive
 - Protection CSRF sur tous les formulaires
 - Sécurité renforcée (seuls les admins peuvent modifier ou supprimer des contenus)
+
+### Architecture technique
+- **Backend** : Python 3.11+, Flask, Flask-SQLAlchemy, Flask-WTF, Flask-Login
+- **Frontend** : Jinja2, Bootstrap 5, CSS personnalisé, Font Awesome, Google Fonts
+- **Base de données** : SQLite (par défaut), support PostgreSQL via `DATABASE_URL`
+- **Sécurité** : CSRF, gestion des sessions, validation des entrées, rôles utilisateur
+- **Déploiement** : Gunicorn, configuration via variables d'environnement
+
+### Structure de la base de données
+
+#### Utilisateurs (`User`)
+- `id` (int, PK)
+- `username` (str, unique, requis)
+- `email` (str, unique, requis)
+- `password_hash` (str, requis)
+- `is_admin` (bool, par défaut False)
+
+#### Articles (`Post`)
+- `id` (int, PK)
+- `title` (str, requis)
+- `content` (text, requis)
+- `category` (str, requis, choix limités)
+- `image_url` (str, optionnel)
+- `created_at` (datetime, auto)
+- `likes` (int, par défaut 0)
+
+#### Commentaires (`Comment`)
+- `id` (int, PK)
+- `post_id` (int, FK vers Post)
+- `author_id` (int, FK vers User)
+- `content` (text, requis)
+- `timestamp` (datetime, auto)
+
+#### Mur de discussion (`MessageBoard`)
+- `id` (int, PK)
+- `author_id` (int, FK vers User)
+- `content` (text, requis)
+- `timestamp` (datetime, auto)
+- `reviewed` (bool, par défaut False)
+- `is_offensive` (bool, par défaut False)
+- `admin_reply` (text, optionnel)
+- `admin_info` (text, optionnel)
+- `admin_user` (str, optionnel)
+
+### Rôles et permissions
+- **Administrateur** :
+  - Peut créer, éditer, supprimer des articles
+  - Peut supprimer n'importe quel commentaire
+  - Peut répondre et modérer le mur de discussion
+  - Peut poster sur le mur de discussion
+- **Utilisateur authentifié** :
+  - Peut lire, liker et commenter les articles
+  - Peut poster sur le mur de discussion
+- **Visiteur non connecté** :
+  - Peut lire les articles et les commentaires
+
+---
 
 ## Structure du projet
 ```
@@ -116,20 +177,3 @@ If you want to undo recent code changes:
   git log  # find the commit hash
   git checkout <commit-hash>
   ```
-
----
-
-### 3. **Rollback a Transaction in Flask/SQLAlchemy**
-If you want to rollback a database transaction in your code (e.g., after an error), you already do this in your Flask routes:
-```python
-db.session.rollback()
-```
-This undoes uncommitted changes in the current transaction.
-
----
-
-**Please specify:**  
-- Do you want to rollback the database schema, your code, or a specific transaction?
-- Do you want to remove the "like" feature, or just undo the last action?
-
-Let me know your intent and I’ll guide you step by step! 
